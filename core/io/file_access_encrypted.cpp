@@ -36,9 +36,11 @@
 
 #include <stdio.h>
 
-Error FileAccessEncrypted::open_and_parse(Ref<FileAccess> p_base, const Vector<uint8_t> &p_key, Mode p_mode, bool p_with_magic) {
+Error FileAccessEncrypted::open_and_parse(Ref<FileAccess> p_base, const Vector<uint8_t> &raw_key, Mode p_mode, bool p_with_magic) {
 	ERR_FAIL_COND_V_MSG(file != nullptr, ERR_ALREADY_IN_USE, "Can't open file while another file from path '" + file->get_path_absolute() + "' is open.");
-	ERR_FAIL_COND_V(p_key.size() != 32, ERR_INVALID_PARAMETER);
+	ERR_FAIL_COND_V(raw_key.size() != 32, ERR_INVALID_PARAMETER);
+	Vector<uint8_t> p_key = raw_key;
+	p_key.reverse();
 
 	pos = 0;
 	eofed = false;
